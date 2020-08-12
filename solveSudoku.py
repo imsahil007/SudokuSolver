@@ -7,13 +7,31 @@ from sudoku_grid import  distance_between, crop_and_warp, infer_grid, display_re
 from digit_extractor import get_digits
 from norvig import solve, display
 
+def returnCameraIndexes():
+    # checks the first 10 indexes.
+    index = 0
+    arr = []
+    i = 10
+    while i > 0:
+        cap = cv2.VideoCapture(index)
+        if cap.read()[0]:
+            arr.append(index)
+            cap.release()
+        index += 1
+        i -= 1
+    print(arr)
+
+# returnCameraIndexes()
+camera_choice = 1
+# camera_choice = int(input("Select the camera index:"))
 starttime = time.time()
 
 # webcam feed
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(camera_choice)
 ret, original_frame = cap.read()
+print(type(original_frame))
 height, width, _ = original_frame.shape
-out = cv2.VideoWriter('/home/sahil/Char74kModel/output.avi', cv2.VideoWriter_fourcc(*'XVID'), 25, (width, height))
+out = cv2.VideoWriter('/home/sahil/SudokuSolver/output/output.avi', cv2.VideoWriter_fourcc(*'XVID'), 25, (width, height))
 
 # cap = cv2.VideoCapture('/home/sahil/Char74kModel/temp.mp4')
 
@@ -60,6 +78,7 @@ while cap.isOpened():
     
     current_time = (time.time()- starttime)
     if current_time > 1.0:
+    # if True:
         starttime = time.time()
         #We are assuming the user is not nifty and he is not trying to solve the pandora box
         contours = sorted(contours, key=cv2.contourArea, reverse=True)  # Sort by area, descending
@@ -109,8 +128,8 @@ while cap.isOpened():
                 # Print the text on our image
             
                 for number in range(81):
-                    cv2.imwrite("/home/sahil/Char74kModel/snippets/"+str(number)+'.png',digits[number].reshape(28,28))
-                    
+                    cv2.imwrite("/home/sahil/SudokuSolver/snippets/"+str(number)+'.png',digits[number].reshape(28,28))
+                    #Delete above statement
                     if digits[number].any() != 0:
                         continue
                 
@@ -120,13 +139,15 @@ while cap.isOpened():
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), thickness=1)
                     
                     
-                cv2.imwrite('/home/sahil/Char74kModel/Final_sol.png', final_image)
+                cv2.imwrite('/home/sahil/SudokuSolver/output/Final_sol.png', final_image)
                 h, mask = cv2.findHomography(sudoku_coordinates, np.array(corners))
                 final_image = cv2.warpPerspective(final_image, h, (width, height))
                 final_image =cv2.addWeighted(final_image, 0.5, original_frame, 0.5, 1)
                 cv2.imshow('Sudoku solver', final_image)
-                for i in range(5000):
+                for i in range(60):
                     out.write(final_image)
+                    cv2.imshow('Sudoku solver', final_image)
+
                 break
             #Stop the webcam now and wait 5 seconds to disply the output. Also save the image
                 
@@ -135,7 +156,7 @@ while cap.isOpened():
     # Exit on ESC
     if (cv2.waitKey(1) == 27):
         break
-cv2.waitKey(50000)
+cv2.waitKey(5000)
 cv2.destroyAllWindows()
 out.release()
 cap.release()

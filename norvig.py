@@ -1,7 +1,7 @@
 # SUDOKU SOLVING ALGORITHM BY PETER NORVIG
 import numpy as np
 from tensorflow.keras.models import load_model
-model = load_model('model/best_accuracy_model')
+model = load_model('/home/sahil/SudokuSolver/model/best_accuracy_model')
 
 def cross(A, B):
     "Cross product of elements in A and elements in B."
