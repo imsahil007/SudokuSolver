@@ -21,12 +21,13 @@ def returnCameraIndexes():
         i -= 1
     print(arr)
 
-# returnCameraIndexes()
+returnCameraIndexes()
 camera_choice = 1
-# camera_choice = int(input("Select the camera index:"))
+camera_choice = int(input("Select the camera index:"))
 starttime = time.time()
 
 # webcam feed
+
 cap = cv2.VideoCapture(camera_choice)
 ret, original_frame = cap.read()
 print(type(original_frame))
@@ -46,10 +47,6 @@ while cap.isOpened():
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     ret, original_frame = cap.read()
     out.write(original_frame)
-
-   
-    # height = 480
-    # width=640
 
     
     #we will use this later
@@ -78,7 +75,6 @@ while cap.isOpened():
     
     current_time = (time.time()- starttime)
     if current_time > 1.0:
-    # if True:
         starttime = time.time()
         #We are assuming the user is not nifty and he is not trying to solve the pandora box
         contours = sorted(contours, key=cv2.contourArea, reverse=True)  # Sort by area, descending
@@ -117,7 +113,7 @@ while cap.isOpened():
             if grid ==".................................................................................":
                 continue
             
-            if solved != False:
+            if solved:
                 
                 digits = np.array(digits).reshape(9, 9 , 28, 28)
                 digits = np.transpose(digits, (1,0,2,3)).reshape(81,28,28)
@@ -128,7 +124,7 @@ while cap.isOpened():
                 # Print the text on our image
             
                 for number in range(81):
-                    cv2.imwrite("/home/sahil/SudokuSolver/snippets/"+str(number)+'.png',digits[number].reshape(28,28))
+                    # cv2.imwrite("/home/sahil/SudokuSolver/snippets/"+str(number)+'.png',digits[number].reshape(28,28))
                     #Delete above statement
                     if digits[number].any() != 0:
                         continue
